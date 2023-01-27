@@ -26,7 +26,7 @@ def process(spark, sc):
 
     print("Extract Data from DW")
     # Extract data from the DW (structured)
-    aircraft_utilization = (spark.read.format("jdbc").option("driver","org.postgresql.Driver").option("url", "jdbc:postgresql://postgresfib.fib.upc.edu:6433/DW?sslmode=require").option("dbtable", "public.aircraftutilization").option("user", "mireia.louzan").option("password", "DB161102").load())
+    aircraft_utilization = (spark.read.format("jdbc").option("driver","org.postgresql.Driver").option("url", "jdbc:postgresql://postgresfib.fib.upc.edu:6433/DW?sslmode=require").option("dbtable", "public.aircraftutilization").option("user", "@user_connection").option("password", "PASSWORD").load())
     df = aircraft_utilization.select("aircraftid","timeid","flighthours","flightcycles","delayedminutes") # take only the needed data from the table
     df_dw = df.withColumn("timeid", df["timeid"].cast("String")) # in order to have the same type of data form timeid in DW - csv
 
@@ -57,7 +57,7 @@ def process(spark, sc):
 
     print("Extract data from AMOS")
     # Extract data from AMOS (to label Maintenance/NonMaintenance)
-    operation_interruption = (spark.read.format("jdbc").option("driver","org.postgresql.Driver").option("url", "jdbc:postgresql://postgresfib.fib.upc.edu:6433/AMOS?sslmode=require").option("dbtable", "oldinstance.operationinterruption").option("user", "mireia.louzan").option("password", "DB161102").load())
+    operation_interruption = (spark.read.format("jdbc").option("driver","org.postgresql.Driver").option("url", "jdbc:postgresql://postgresfib.fib.upc.edu:6433/AMOS?sslmode=require").option("dbtable", "oldinstance.operationinterruption").option("user", "@user_connection").option("password", "PASSWORD").load())
     df_amos = operation_interruption.filter(operation_interruption.subsystem == "3453").select("aircraftregistration", "starttime") # Filter the aircrafts with information of the concret sensor and take only the needed columns
     df_amos = df_amos.withColumn("starttime", df_amos["starttime"].cast("String"))
     df_amos = df_amos.withColumn("starttime", concat(df_amos.starttime.substr(1, 10))) # set date in the correct format
