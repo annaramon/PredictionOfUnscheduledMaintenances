@@ -36,7 +36,7 @@ def process(spark, sc, aircraftID, day):
 
     print("Extract Data from DW")
     # Extract data from the DW (structured), kpis that we want to take into account
-    aircraft_utilization = (spark.read.format("jdbc").option("driver","org.postgresql.Driver").option("url", "jdbc:postgresql://postgresfib.fib.upc.edu:6433/DW?sslmode=require").option("dbtable", "public.aircraftutilization").option("user", "mireia.louzan").option("password", "DB161102").load())
+    aircraft_utilization = (spark.read.format("jdbc").option("driver","org.postgresql.Driver").option("url", "jdbc:postgresql://postgresfib.fib.upc.edu:6433/DW?sslmode=require").option("dbtable", "public.aircraftutilization").option("user", "@user_name").option("password", "PASSWORD_CONNECTION").load())
     df = aircraft_utilization.select("aircraftid","timeid","flighthours","flightcycles","delayedminutes")
     df = df.withColumn("timeid", df["timeid"].cast("String"))
     df_info = df.filter((df.aircraftid == aircraftID) & (df.timeid == day)) # filter the data for the given aircraft and date
